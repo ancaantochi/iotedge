@@ -131,11 +131,7 @@ fn build_libiothsm() {
     // Always make the Release version because Rust links to the Release CRT.
     // (This is especially important for Windows)
 
-    let rut = if env::var("FORCE_NO_UNITTEST").is_ok() {
-        "OFF"
-    } else {
-        "ON"
-    };
+    let rut = "OFF";
     println!("#Start building HSM dev-mode library");
     let iothsm = Config::new("azure-iot-hsm-c")
         .define(SSL_OPTION, "ON")
@@ -166,9 +162,7 @@ fn build_libiothsm() {
 
     // we need to explicitly link with c shared util only when we build the C
     // library as a static lib which we do only in rust debug builds
-    #[cfg(debug_assertions)]
     println!("cargo:rustc-link-lib=aziotsharedutil");
-    #[cfg(debug_assertions)]
     println!("cargo:rustc-link-lib=utpm");
 
     #[cfg(windows)]

@@ -76,7 +76,7 @@ impl SetPlatformDefines for Config {
 
     #[cfg(not(debug_assertions))]
     fn set_build_shared(&mut self) -> &mut Self {
-        self.define("BUILD_SHARED", "OFF")
+        self.define("BUILD_SHARED", "ON")
     }
 }
 
@@ -162,7 +162,9 @@ fn build_libiothsm() {
 
     // we need to explicitly link with c shared util only when we build the C
     // library as a static lib which we do only in rust debug builds
+    #[cfg(debug_assertions)]
     println!("cargo:rustc-link-lib=aziotsharedutil");
+    #[cfg(debug_assertions)]
     println!("cargo:rustc-link-lib=utpm");
 
     #[cfg(windows)]

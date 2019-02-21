@@ -19,7 +19,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             DockerConfig config,
             ImagePullPolicy imagePullPolicy,
             ConfigurationInfo configurationInfo,
-            IDictionary<string, EnvVal> env)
+            IDictionary<string, EnvVal> env,
+            IDictionary<string, AdvertisedServiceProfile> services)
         {
             this.Name = name;
             this.Version = version ?? string.Empty;
@@ -29,6 +30,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             this.ImagePullPolicy = Preconditions.CheckIsDefined(imagePullPolicy);
             this.ConfigurationInfo = configurationInfo ?? new ConfigurationInfo(string.Empty);
             this.Env = env?.ToImmutableDictionary() ?? ImmutableDictionary<string, EnvVal>.Empty;
+            this.ServiceProfiles = services?.ToImmutableDictionary() ?? ImmutableDictionary<string, AdvertisedServiceProfile>.Empty;
         }
 
         [JsonIgnore]
@@ -57,6 +59,9 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
 
         [JsonProperty(PropertyName = "env")]
         public IDictionary<string, EnvVal> Env { get; }
+
+        [JsonProperty(PropertyName = "services")]
+        public IDictionary<string, AdvertisedServiceProfile> ServiceProfiles { get; }
 
         public override bool Equals(object obj) => this.Equals(obj as DockerModule);
 

@@ -29,7 +29,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 ModuleStatus.Running,
                 ImagePullPolicy.Never,
                 new ConfigurationInfo("1"),
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                null);
 
             // Act
             JToken json = JToken.Parse(JsonConvert.SerializeObject(module));
@@ -101,7 +102,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 ModuleStatus.Running,
                 ImagePullPolicy.Never,
                 null,
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                null);
 
             Assert.Equal(expected, actual);
         }
@@ -119,7 +121,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 new DockerConfig(image),
                 ImagePullPolicy.OnCreate,
                 new ConfigurationInfo("1"),
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                new Dictionary<string, AdvertisedServiceProfile>());
 
             var edgeHubDockerRuntimeModule = new EdgeHubDockerRuntimeModule(
                 ModuleStatus.Running,
@@ -134,7 +137,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 ModuleStatus.Running,
                 ImagePullPolicy.OnCreate,
                 new ConfigurationInfo("1"),
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                null);
 
             // Act
             bool equal = edgeHubDockerModule.Equals(edgeHubDockerRuntimeModule);
@@ -160,7 +164,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 ModuleStatus.Running,
                 ImagePullPolicy.OnCreate,
                 new ConfigurationInfo("1"),
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                new Dictionary<string, AdvertisedServiceProfile>());
             var updatedModule1 = (EdgeHubDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Running);
             var updatedModule2 = (EdgeHubDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Unknown);
 

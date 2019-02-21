@@ -28,6 +28,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core
         public IDictionary<string, EnvVal> Env { get; } = ImmutableDictionary<string, EnvVal>.Empty;
 
         public bool IsOnlyModuleStatusChanged(IModule other) => other is UnknownModule;
+        
+        public IDictionary<string, AdvertisedServiceProfile> ServiceProfiles { get; } = ImmutableDictionary<string, AdvertisedServiceProfile>.Empty;
 
         public bool Equals(IModule other) => other != null && ReferenceEquals(this, other);
     }

@@ -118,6 +118,9 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core
         [JsonProperty(PropertyName = "env")]
         IDictionary<string, EnvVal> Env { get; }
 
+        [JsonProperty(PropertyName = "services")]
+        IDictionary<string, AdvertisedServiceProfile> ServiceProfiles { get; }
+
         bool IsOnlyModuleStatusChanged(IModule other);
     }
 

@@ -9,8 +9,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
     public class EdgeAgentDockerModule : DockerModule, IEdgeAgentModule
     {
         [JsonConstructor]
-        public EdgeAgentDockerModule(string type, DockerConfig settings, ImagePullPolicy imagePullPolicy, ConfigurationInfo configuration, IDictionary<string, EnvVal> env, string version = "")
-            : base(Core.Constants.EdgeAgentModuleName, version, ModuleStatus.Running, RestartPolicy.Always, settings, imagePullPolicy, configuration, env)
+        public EdgeAgentDockerModule(string type, DockerConfig settings, ImagePullPolicy imagePullPolicy, ConfigurationInfo configuration, IDictionary<string, EnvVal> env, AdvertisedServiceProfile> services, string version = "")
+            : base(Core.Constants.EdgeAgentModuleName, version, ModuleStatus.Running, RestartPolicy.Always, settings, imagePullPolicy, configuration, env, services)
         {
             Preconditions.CheckArgument(type?.Equals("docker") ?? false);
         }

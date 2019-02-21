@@ -19,6 +19,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             ImagePullPolicy imagePullPolicy,
             ConfigurationInfo configuration,
             IDictionary<string, EnvVal> env,
+            IDictionary<string, AdvertisedServiceProfile> services,
             string version = "")
             : base(
                 Core.Constants.EdgeAgentModuleName,
@@ -35,7 +36,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                 runtimeStatus,
                 imagePullPolicy,
                 configuration,
-                env)
+                env,
+                services)
         {
             // You maybe wondering why we are setting this here again even though
             // the base class does this assignment. This is due to a behavior
@@ -75,6 +77,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             this.ImagePullPolicy,
             this.ConfigurationInfo,
             this.Env,
+            this.ServiceProfiles,
             this.Version);
     }
 }

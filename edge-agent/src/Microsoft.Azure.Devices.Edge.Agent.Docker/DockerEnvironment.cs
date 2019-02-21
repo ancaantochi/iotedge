@@ -61,7 +61,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
 
                 if (!moduleSet.Modules.TryGetValue(dockerRuntimeInfo.Name, out IModule configModule) || !(configModule is DockerModule dockerModule))
                 {
-                    dockerModule = new DockerModule(dockerRuntimeInfo.Name, string.Empty, ModuleStatus.Unknown, Core.RestartPolicy.Unknown, new DockerConfig(Constants.UnknownImage, new CreateContainerParameters()), ImagePullPolicy.OnCreate, new ConfigurationInfo(), null);
+                    dockerModule = new DockerModule(dockerRuntimeInfo.Name, string.Empty, ModuleStatus.Unknown, Core.RestartPolicy.Unknown, new DockerConfig(Constants.UnknownImage, new CreateContainerParameters()), ImagePullPolicy.OnCreate, new ConfigurationInfo(), null, null);
                 }
 
                 Option<ModuleState> moduleStateOption = await this.moduleStateStore.Get(moduleRuntimeInfo.Name);
@@ -91,7 +91,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                             moduleRuntimeStatus,
                             dockerModule.ImagePullPolicy,
                             dockerModule.ConfigurationInfo,
-                            dockerModule.Env);
+                            dockerModule.Env,
+                            dockerModule.ServiceProfiles);
                         break;
 
                     case Core.Constants.EdgeAgentModuleName:
@@ -104,7 +105,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                             lastExitTime,
                             dockerModule.ImagePullPolicy,
                             dockerModule.ConfigurationInfo,
-                            dockerModule.Env);
+                            dockerModule.Env,
+                            dockerModule.ServiceProfiles);
                         break;
 
                     default:
@@ -123,7 +125,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                             moduleRuntimeStatus,
                             dockerModule.ImagePullPolicy,
                             dockerModule.ConfigurationInfo,
-                            dockerModule.Env);
+                            dockerModule.Env,
+                            dockerModule.ServiceProfiles);
                         break;
                 }
 

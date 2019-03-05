@@ -103,6 +103,9 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core
 
         [JsonProperty(PropertyName = "env")]
         IDictionary<string, EnvVal> Env { get; }
+
+        [JsonProperty(PropertyName = "services")]
+        IDictionary<string, AdvertisedServiceProfile> ServiceProfiles { get; }
     }
 
     public interface IModule<TConfig> : IModule, IEquatable<IModule<TConfig>>

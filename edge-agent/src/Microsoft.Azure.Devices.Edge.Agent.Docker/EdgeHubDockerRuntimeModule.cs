@@ -23,6 +23,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             ModuleStatus runtimeStatus,
             ConfigurationInfo configuration,
             IDictionary<string, EnvVal> env,
+            IDictionary<string, AdvertisedServiceProfile> services,
             string version = "")
             : base(
                 Core.Constants.EdgeHubModuleName,
@@ -38,7 +39,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                 lastRestartTime,
                 runtimeStatus,
                 configuration,
-                env)
+                env,
+                services)
         {
             // You maybe wondering why we are setting this here again even though
             // the base class does this assignment. This is due to a behavior
@@ -65,6 +67,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             ModuleStatus runtimeStatus,
             ConfigurationInfo configurationInfo,
             IDictionary<string, EnvVal> env,
+            IDictionary<string, AdvertisedServiceProfile> services,
             string version = "")
             : this(
                 status,
@@ -79,6 +82,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                 runtimeStatus,
                 configurationInfo,
                 env,
+                services,
                 version)
         {
             Preconditions.CheckArgument(type?.Equals("docker") ?? false);
@@ -106,6 +110,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             this.LastRestartTimeUtc,
             newStatus,
             this.ConfigurationInfo,
-            this.Env);
+            this.Env,
+            this.ServiceProfiles);
     }
 }

@@ -18,6 +18,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             DateTime lastExitTime,
             ConfigurationInfo configuration,
             IDictionary<string, EnvVal> env,
+            IDictionary<string, AdvertisedServiceProfile> services,
             string version = "")
             : base(
                 Core.Constants.EdgeAgentModuleName,
@@ -33,7 +34,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                 DateTime.MinValue,
                 runtimeStatus,
                 configuration,
-                env)
+                env,
+                services)
         {
             // You maybe wondering why we are setting this here again even though
             // the base class does this assignment. This is due to a behavior
@@ -72,6 +74,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             this.LastExitTimeUtc,
             this.ConfigurationInfo,
             this.Env,
+            this.ServiceProfiles,
             this.Version);
     }
 }

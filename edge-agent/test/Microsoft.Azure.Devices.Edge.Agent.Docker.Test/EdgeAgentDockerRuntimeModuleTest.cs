@@ -27,7 +27,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 lastStartTimeUtc,
                 lastExitTimeUtc,
                 null,
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                new Dictionary<string, AdvertisedServiceProfile>());
 
             // Act
             JToken json = JToken.Parse(JsonConvert.SerializeObject(module));
@@ -137,7 +138,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 lastStartTimeUtc,
                 lastExitTimeUtc,
                 new ConfigurationInfo("bing"),
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                new Dictionary<string, AdvertisedServiceProfile>());
             var updatedModule1 = (EdgeAgentDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Running);
             var updatedModule2 = (EdgeAgentDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Unknown);
 

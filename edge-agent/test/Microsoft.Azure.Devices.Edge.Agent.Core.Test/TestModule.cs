@@ -92,6 +92,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Test
         [JsonProperty("env")]
         public IDictionary<string, EnvVal> Env { get; }
 
+        public IDictionary<string, AdvertisedServiceProfile> ServiceProfiles { get; }
+
         public override bool Equals(object obj) => this.Equals(obj as TestModuleBase<TConfig>);
 
         public bool Equals(IModule other) => this.Equals(other as TestModuleBase<TConfig>);

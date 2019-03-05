@@ -17,8 +17,9 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             DockerConfig settings,
             ConfigurationInfo configuration,
             IDictionary<string, EnvVal> env,
+            IDictionary<string, AdvertisedServiceProfile> services,
             string version = "")
-            : base(Core.Constants.EdgeHubModuleName, version, status, restartPolicy, settings, configuration, env)
+            : base(Core.Constants.EdgeHubModuleName, version, status, restartPolicy, settings, configuration, env, services)
         {
             Preconditions.CheckArgument(type?.Equals("docker") ?? false);
             this.DesiredStatus = Preconditions.CheckIsDefined(status);

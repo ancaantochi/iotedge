@@ -158,6 +158,10 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
                         runtimeInfo);
                 });
 
+            IEnumerable<ICommand> advertiseServicesCommands = await Task.WhenAll(added
+                                                                                     .Where(m => m.ServiceProfiles.Count > 0)
+                                                                                     .Select(m => this.commandFactory.WrapAsync(new AdvertisedServices(m.ServiceProfiles))));
+
             // apply restart policy for modules that are not in the deployment list and aren't running
             IEnumerable<Task<ICommand>> restartTasks = this.ApplyRestartPolicy(updateStateChanged.Where(m => !m.Name.Equals(Constants.EdgeAgentModuleName, StringComparison.OrdinalIgnoreCase)));
             IEnumerable<ICommand> restart = await Task.WhenAll(restartTasks);
@@ -172,6 +176,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
                 .Concat(removeState)
                 .Concat(addedCommands)
                 .Concat(updatedCommands)
+                .Concat(advertiseServicesCommands)
                 .Concat(restart)
                 .Concat(resetHealthStatus)
                 .ToList();

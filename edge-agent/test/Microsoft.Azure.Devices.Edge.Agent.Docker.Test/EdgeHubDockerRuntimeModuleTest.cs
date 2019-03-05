@@ -28,7 +28,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 DateTime.MinValue,
                 ModuleStatus.Running,
                 new ConfigurationInfo("1"),
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                null);
 
             // Act
             JToken json = JToken.Parse(JsonConvert.SerializeObject(module));
@@ -97,7 +98,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 DateTime.MinValue,
                 ModuleStatus.Running,
                 null,
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                null);
 
             Assert.Equal(expected, actual);
         }
@@ -114,7 +116,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 RestartPolicy.Always,
                 new DockerConfig(image),
                 new ConfigurationInfo("1"),
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                new Dictionary<string, AdvertisedServiceProfile>());
 
             var edgeHubDockerRuntimeModule = new EdgeHubDockerRuntimeModule(
                 ModuleStatus.Running,
@@ -128,7 +131,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 DateTime.MinValue,
                 ModuleStatus.Running,
                 new ConfigurationInfo("1"),
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                null);
 
             // Act
             bool equal = edgeHubDockerModule.Equals(edgeHubDockerRuntimeModule);
@@ -153,7 +157,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 DateTime.MinValue,
                 ModuleStatus.Running,
                 new ConfigurationInfo("1"),
-                new Dictionary<string, EnvVal>());
+                new Dictionary<string, EnvVal>(),
+                new Dictionary<string, AdvertisedServiceProfile>());
             var updatedModule1 = (EdgeHubDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Running);
             var updatedModule2 = (EdgeHubDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Unknown);
 

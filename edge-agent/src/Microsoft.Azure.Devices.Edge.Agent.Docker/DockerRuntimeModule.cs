@@ -23,8 +23,9 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             DateTime lastRestartTime,
             ModuleStatus runtimeStatus,
             ConfigurationInfo configuration,
-            IDictionary<string, EnvVal> env)
-            : base(name, version, desiredStatus, restartPolicy, config, configuration, env)
+            IDictionary<string, EnvVal> env,
+            IDictionary<string, AdvertisedServiceProfile> services)
+            : base(name, version, desiredStatus, restartPolicy, config, configuration, env, services)
         {
             this.ExitCode = exitCode;
             this.StatusDescription = statusDescription;
@@ -51,7 +52,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             DateTime lastRestartTimeUtc,
             ModuleStatus runtimeStatus,
             ConfigurationInfo configurationInfo,
-            IDictionary<string, EnvVal> env)
+            IDictionary<string, EnvVal> env,
+            IDictionary<string, AdvertisedServiceProfile> services)
             : this(
                 name,
                 version,
@@ -66,7 +68,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                 lastRestartTimeUtc,
                 runtimeStatus,
                 configurationInfo,
-                env)
+                env,
+                services)
         {
             Preconditions.CheckArgument(type?.Equals("docker") ?? false);
         }
@@ -154,6 +157,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             this.LastRestartTimeUtc,
             newStatus,
             this.ConfigurationInfo,
-            this.Env);
+            this.Env,
+            this.ServiceProfiles);
     }
 }

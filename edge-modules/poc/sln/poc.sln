@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "poc", "..\poc.csproj", "{53F6FD54-0148-4D96-BA17-ECE7FE0B2C5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Devices.Client", "..\..\..\..\azure-iot-sdk-csharp\iothub\device\src\Microsoft.Azure.Devices.Client.csproj", "{D72D35FF-6F94-479F-BF28-7BD6B6B2D7A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Devices.Shared", "..\..\..\..\azure-iot-sdk-csharp\shared\src\Microsoft.Azure.Devices.Shared.csproj", "{B925FF62-7C88-4204-9CA8-7C2E619BC364}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53F6FD54-0148-4D96-BA17-ECE7FE0B2C5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53F6FD54-0148-4D96-BA17-ECE7FE0B2C5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53F6FD54-0148-4D96-BA17-ECE7FE0B2C5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53F6FD54-0148-4D96-BA17-ECE7FE0B2C5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D72D35FF-6F94-479F-BF28-7BD6B6B2D7A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D72D35FF-6F94-479F-BF28-7BD6B6B2D7A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D72D35FF-6F94-479F-BF28-7BD6B6B2D7A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D72D35FF-6F94-479F-BF28-7BD6B6B2D7A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B925FF62-7C88-4204-9CA8-7C2E619BC364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B925FF62-7C88-4204-9CA8-7C2E619BC364}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B925FF62-7C88-4204-9CA8-7C2E619BC364}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B925FF62-7C88-4204-9CA8-7C2E619BC364}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5ECF1B36-2F30-476D-88EB-48D198E47CF4}
+	EndGlobalSection
+EndGlobal

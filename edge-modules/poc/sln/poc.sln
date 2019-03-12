@@ -9,6 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Devices.Cli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Devices.Shared", "..\..\..\..\azure-iot-sdk-csharp\shared\src\Microsoft.Azure.Devices.Shared.csproj", "{B925FF62-7C88-4204-9CA8-7C2E619BC364}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Devices.Provisioning.Client", "..\..\..\..\azure-iot-sdk-csharp\provisioning\device\src\Microsoft.Azure.Devices.Provisioning.Client.csproj", "{DEBE4B74-C79B-4920-B1A6-D2CC607E406A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Devices.Provisioning.Transport.Http", "..\..\..\..\azure-iot-sdk-csharp\provisioning\transport\http\src\Microsoft.Azure.Devices.Provisioning.Transport.Http.csproj", "{E75724AD-B2D9-437A-A212-F19A19CFD508}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Rest.ClientRuntime", "..\..\..\..\..\Repo\azure-sdk-for-net\src\SdkCommon\ClientRuntime\ClientRuntime\Microsoft.Rest.ClientRuntime.csproj", "{B0C8D1F5-71A5-43DC-A838-8249617BB150}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zeroconf", "..\..\..\..\..\Repo\Zeroconf\Zeroconf\Zeroconf.csproj", "{C70CA1C8-A400-4CC2-A99A-3D5CBDBCDDE6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +35,22 @@ Global
 		{B925FF62-7C88-4204-9CA8-7C2E619BC364}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B925FF62-7C88-4204-9CA8-7C2E619BC364}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B925FF62-7C88-4204-9CA8-7C2E619BC364}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEBE4B74-C79B-4920-B1A6-D2CC607E406A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBE4B74-C79B-4920-B1A6-D2CC607E406A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBE4B74-C79B-4920-B1A6-D2CC607E406A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBE4B74-C79B-4920-B1A6-D2CC607E406A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E75724AD-B2D9-437A-A212-F19A19CFD508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E75724AD-B2D9-437A-A212-F19A19CFD508}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E75724AD-B2D9-437A-A212-F19A19CFD508}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E75724AD-B2D9-437A-A212-F19A19CFD508}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C8D1F5-71A5-43DC-A838-8249617BB150}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0C8D1F5-71A5-43DC-A838-8249617BB150}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0C8D1F5-71A5-43DC-A838-8249617BB150}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C8D1F5-71A5-43DC-A838-8249617BB150}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C70CA1C8-A400-4CC2-A99A-3D5CBDBCDDE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C70CA1C8-A400-4CC2-A99A-3D5CBDBCDDE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C70CA1C8-A400-4CC2-A99A-3D5CBDBCDDE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C70CA1C8-A400-4CC2-A99A-3D5CBDBCDDE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

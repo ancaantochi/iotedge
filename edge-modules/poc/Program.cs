@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection.PortableExecutable;
@@ -12,8 +13,10 @@ using Makaretu.Dns;
 using Microsoft.Azure.Devices.Client;
 using Microsoft.Azure.Devices.Client.Transport.Mqtt;
 using Microsoft.Azure.Devices.Provisioning.Client;
-using Microsoft.Azure.Devices.Provisioning.Client.Transport;
+using Microsoft.Azure.Devices.Registration.Clients.Devices.V20190115;
+using Microsoft.Azure.Devices.Registration.Clients.Devices.V20190115.Models;
 using Microsoft.Azure.Devices.Shared;
+using Microsoft.Rest;
 using Newtonsoft.Json;
 using Zeroconf;
 using Message = Microsoft.Azure.Devices.Client.Message;
@@ -96,30 +99,41 @@ namespace poc
             }
 
             string secondaryKey = Environment.GetEnvironmentVariable("SECONDARY_KEY");
-            string globalDeviceEndpoint = "edgehackathon3.pp0.azure-devices-provisioning-int.net";//"global.azure-devices-provisioning.net";
-            string idScope = "1989705015";//Environment.GetEnvironmentVariable("ID_SCOPE");
+            string globalDeviceEndpoint = "global.azure-devices-provisioning.net";
+            string idScope = "0NE76987D37";//Environment.GetEnvironmentVariable("ID_SCOPE");
             string registrationId = Environment.GetEnvironmentVariable("REGISTARTION_ID");
             string primaryKey = Environment.GetEnvironmentVariable("PRIMARY_KEY");
-            var transport = new ProvisioningTransportHandlerHttp();
-            if (ips.Count > 0)
-            {
-                transport.Proxy = new WebProxy($"http://{ips[0].Address}:{ips[0].Port}");
-            }
+            //var transport = new ProvisioningTransportHandlerHttp();
+            //if (ips.Count > 0)
+            //{
+            //    transport.Proxy = new WebProxy($"http://{ips[0].Address}:{ips[0].Port}");
+            //}
 
             Console.WriteLine($"Provisioning using DPS Configuration: \n  Global endpoint: {globalDeviceEndpoint} \n  ID Scope: {idScope} \n  Registration Id: {registrationId}");
             Console.WriteLine();
 
-            var dpsClient = ProvisioningDeviceClient.Create(globalDeviceEndpoint, idScope,
-                    new SecurityProviderSymmetricKey(registrationId, primaryKey, secondaryKey), transport);
+            var handler = new HttpClientHandler();
+            if (ips.Count > 0)
+            {
+                handler.UseProxy = true;
+                handler.Proxy = new WebProxy($"http://{ips[0].Address}:{ips[0].Port}");
+            }
+
+            var dpsClient = new ProvisioningDeviceClient(new SymmetricKeyCredentials(primaryKey), handler);
+            var registration = new RuntimeRegistration(dpsClient);
+            //var dpsClient = ProvisioningDeviceClient.Create(globalDeviceEndpoint, idScope,
+            //        new SecurityProviderSymmetricKey(registrationId, primaryKey, secondaryKey), transport);
             
-            var result = dpsClient.RegisterAsync().Result;
+            //var result = dpsClient.RegisterAsync().Result;
+
+            var resultr = registration.RegisterDeviceWithHttpMessagesAsync(registrationId, new DeviceRegistration(registrationId), idScope).Result;
 
             Console.WriteLine("Successfully provisioned by DPS. \n");
             string serviceName = "Winterfell";
-            Console.WriteLine($"Received DPS registration info \n  DeviceId: {result.DeviceId}, \n  IoT Hub: {result.AssignedHub}, \n  Local Edge Gateway service name: {serviceName}  <=== ***This is new configuration metadata from DPS*** \n");
+            //Console.WriteLine($"Received DPS registration info \n  DeviceId: {result.DeviceId}, \n  IoT Hub: {result.AssignedHub}, \n  Local Edge Gateway service name: {serviceName}  <=== ***This is new configuration metadata from DPS*** \n");
 
-            string iothub = result.AssignedHub; //Environment.GetEnvironmentVariable("IOTHUB"); //result.AssignedHub
-            string deviceId = result.DeviceId; //Environment.GetEnvironmentVariable("DEVICE_ID"); //result.DeviceId
+            string iothub = Environment.GetEnvironmentVariable("IOTHUB"); //result.AssignedHub
+            string deviceId = Environment.GetEnvironmentVariable("DEVICE_ID"); //result.DeviceId
             var serviceDiscovery = new MDnsServiceDiscovery("edgehub");
             //var t = new MqttTransportSettings(TransportType.Mqtt_Tcp_Only);
             //t.Proxy = new WebProxy($"http://{ips[0].Address}:{ips[0].Port}");

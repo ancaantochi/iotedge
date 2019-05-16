@@ -12,7 +12,7 @@ BUILD_DIR="$PROJECT_ROOT/$BUILD_DIR_REL"
 
 CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo/"}
 RUSTUP_HOME=${RUSTUP_HOME:-"$HOME/.rustup"}
-IMAGE="edgebuilds.azurecr.io/gcc-linaro-7.3.1-2019.02-x86_64_arm-linux-gnueabihf:centos_7.5-1"
+IMAGE="edgebuilds.azurecr.io/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf:centos_7.5-1"
 
 REVISION=${REVISION:-1}
 DEFAULT_VERSION=$(cat $PROJECT_ROOT/version.txt)

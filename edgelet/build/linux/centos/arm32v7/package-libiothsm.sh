@@ -10,7 +10,7 @@ PROJECT_ROOT=${BUILD_REPOSITORY_LOCALPATH}/edgelet
 
 BUILD_DIR_REL="target/hsm/build/arm32v7"
 BUILD_DIR="$PROJECT_ROOT/$BUILD_DIR_REL"
-IMAGE="edgebuilds.azurecr.io/gcc-linaro-7.3.1-2018.05-x86_64_arm-linux-gnueabihf:centos_7.5-1"
+IMAGE="edgebuilds.azurecr.io/gcc-linaro-7.4.1-2019.02-x86_64_arm-linux-gnueabihf:centos_7.5-1"
 
 PACKAGE_NAME="libiothsm-std"
 REVISION=${REVISION:-1}

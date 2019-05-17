@@ -128,10 +128,8 @@ echo "==========================================================================
 
 # systemd
 %{_unitdir}/%{name}.service
-
-# sockets
-%attr(660, %{iotedge_user}, %{iotedge_group}) %{iotedge_home}/mgmt.sock
-%attr(666, %{iotedge_user}, %{iotedge_group}) %{iotedge_home}/workload.sock
+%{_unitdir}/%{name}.socket
+%{_unitdir}/%{name}.mgmt.socket
 
 # dirs
 %attr(-, %{iotedge_user}, %{iotedge_group}) %dir %{iotedge_home}

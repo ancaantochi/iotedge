@@ -109,7 +109,7 @@ deb: release
 	$(SED) "s/@version@/${DEB_VERSION}/g; s/@revision@/${DEB_REVISION}/g;" $(srcdir)/contrib/debian/changelog > $(TARGET)/$(PACKAGE)/debian/changelog
 	cd $(TARGET)/$(PACKAGE) && dpkg-buildpackage $(DPKGFLAGS)
 
-rpm: HOST_URI_OPTION=IOTEDGE_HOST=unix:///var/lib/iotedge/mgmt.sock
+rpm: HOST_URI_OPTION=IOTEDGE_HOST=unix:///var/run/iotedge/mgmt.sock
 rpm:
 	cp $(TARGET)/$(PACKAGE).tar.gz $(rpmbuilddir)/SOURCES/
 	$(SED) "s/@version@/${RPM_VERSION}/g; s/@release@/${RPM_RELEASE}/g;" $(srcdir)/contrib/centos/iotedge.spec > $(rpmbuilddir)/SPECS/iotedge.spec

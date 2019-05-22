@@ -59,7 +59,7 @@ release:
 
 $(TARGET)/$(PACKAGE).tar.gz:
 	@echo Running git archive...
-	@$(GIT) archive --prefix=$(PACKAGE)/ -o $(TARGET)/$(PACKAGE).tar $(VERSION) 2> /dev/null || (echo 'Warning: $(VERSION) does not exist.' && $(GIT) archive --prefix=$(PACKAGE)/ -o $(TARGET)/$(PACKAGE).tar HEAD)
+	$(GIT) archive --prefix=$(PACKAGE)/ -o $(TARGET)/$(PACKAGE).tar HEAD
 	@echo Running git archive submodules...
 	p=`pwd` && (echo .; cd .. && git submodule foreach --recursive) | while read entering path; do \
 	    cd $$p; \

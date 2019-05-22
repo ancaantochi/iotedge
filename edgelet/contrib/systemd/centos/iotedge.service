@@ -6,6 +6,7 @@ Wants=network-online.target docker.service
 Documentation=man:iotedged(8)
 
 [Service]
+ExecStartPre=-/bin/rm -r /var/lib/iotedge/hsm/certs/ /var/lib/iotedge/hsm/cert_keys/
 ExecStart=/usr/bin/iotedged -c /etc/iotedge/config.yaml
 KillMode=process
 TimeoutStartSec=600

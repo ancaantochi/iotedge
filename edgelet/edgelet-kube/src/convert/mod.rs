@@ -12,7 +12,7 @@ pub use self::to_k8s::{auth_to_image_pull_secret, spec_to_deployment};
 pub fn sanitize_dns_value(name: &str) -> Result<String> {
     let name_string = sanitize_dns_label(name);
     if name_string.is_empty() {
-        Err(ErrorKind::InvalidModuleName(name.to_owned()))?
+        Err(ErrorKind::InvalidModuleName(name.to_owned()).into())
     } else {
         Ok(name_string)
     }

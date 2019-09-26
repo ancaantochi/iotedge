@@ -1083,5 +1083,4 @@ mod tests {
             client: service,
         }
     }
-
 }

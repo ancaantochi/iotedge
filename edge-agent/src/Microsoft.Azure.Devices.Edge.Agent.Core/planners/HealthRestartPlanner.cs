@@ -38,17 +38,20 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
         readonly IEntityStore<string, ModuleState> store;
         readonly TimeSpan intensiveCareTime;
         readonly IRestartPolicyManager restartManager;
+        readonly IServiceRegistry serviceRegistry;
 
         public HealthRestartPlanner(
             ICommandFactory commandFactory,
             IEntityStore<string, ModuleState> store,
             TimeSpan intensiveCareTime,
-            IRestartPolicyManager restartManager)
+            IRestartPolicyManager restartManager,
+            IServiceRegistry serviceRegistry)
         {
             this.commandFactory = Preconditions.CheckNotNull(commandFactory, nameof(commandFactory));
             this.store = Preconditions.CheckNotNull(store, nameof(store));
             this.intensiveCareTime = intensiveCareTime;
             this.restartManager = Preconditions.CheckNotNull(restartManager, nameof(restartManager));
+            this.serviceRegistry = Preconditions.CheckNotNull(serviceRegistry, nameof(serviceRegistry));
         }
 
         public async Task<Plan> CreateShutdownPlanAsync(ModuleSet current)
@@ -117,9 +120,12 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
                 .Select(m => this.commandFactory.WrapAsync(new RemoveFromStoreCommand<ModuleState>(this.store, m)));
             IEnumerable<ICommand> removeState = await Task.WhenAll(removeStateTasks);
 
-            IEnumerable<ICommand> advertiseServicesCommands = await Task.WhenAll(added
-                                                                                     .Where(m => m.ServiceProfiles.Count > 0)
-                                                                                     .Select(m => this.commandFactory.WrapAsync(new AdvertisedServices(m.ServiceProfiles))));
+            IEnumerable<ICommand> addServicesCommands = await Task.WhenAll(added.Where(m => m.RegisteredServices.Count > 0)
+                                                                                     .Select(m => this.commandFactory.WrapAsync(new AdvertiseServices(this.serviceRegistry, m.RegisteredServices))));
+            IEnumerable<ICommand> removeServicesCommands = await Task.WhenAll(removed.Where(m => m.RegisteredServices.Count > 0)
+                                                                                     .Select(m => this.commandFactory.WrapAsync(new UnadvertiseServices(this.serviceRegistry, m.RegisteredServices))));
+            //IEnumerable<ICommand> updateServicesCommands = await Task.WhenAll(updateDeployed.Where(m => m.RegisteredServices.Count > 0)
+            //                                                                      .Select(m => this.commandFactory.WrapAsync(new UpdateAdvertiseServices(this.serviceRegistry, m.RegisteredServices))));
 
             // clear the "restartCount" and "lastRestartTime" values for running modules that have been up
             // for more than "IntensiveCareTime" & still have an entry for them in the store
@@ -133,7 +139,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
                 .Concat(updatedCommands)
                 .Concat(stateChangedCommands)
                 .Concat(desiredStatedChangedCommands.Select(d => d.command))
-                .Concat(advertiseServicesCommands)
+                .Concat(removeServicesCommands)
+                .Concat(addServicesCommands)
                 .Concat(resetHealthStatus)
                 .ToList();
 

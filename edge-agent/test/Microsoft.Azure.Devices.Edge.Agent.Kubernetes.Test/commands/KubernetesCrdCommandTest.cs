@@ -25,6 +25,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Kubernetes.Test.Commands
         const string Namespace = "namespace";
         static readonly ResourceName ResourceName = new ResourceName("hostname", "deviceId");
         static readonly IDictionary<string, EnvVal> EnvVars = new Dictionary<string, EnvVal>();
+        static readonly IDictionary<string, ServiceInfo> Services = new Dictionary<string, ServiceInfo>();
         static readonly DockerConfig Config1 = new DockerConfig("test-image:1");
         static readonly DockerConfig Config2 = new DockerConfig("test-image:2");
         static readonly ConfigurationInfo DefaultConfigurationInfo = new ConfigurationInfo("1");
@@ -37,7 +38,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Kubernetes.Test.Commands
         public void ConstructorThrowsOnInvalidParams()
         {
             CombinedDockerConfig config = new CombinedDockerConfig("image", new Docker.Models.CreateContainerParameters(), Option.None<AuthConfig>());
-            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars);
+            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars, Services);
             KubernetesModule km1 = new KubernetesModule(m1 as IModule<DockerConfig>, config);
             KubernetesModule[] modules = { km1 };
             Assert.Throws<ArgumentException>(() => new EdgeDeploymentCommand(null, ResourceName, DefaultClient, modules, Runtime, DefaultConfigProvider));
@@ -53,7 +54,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Kubernetes.Test.Commands
         public async void CrdCommandExecuteWithAuthCreateNewObjects()
         {
             CombinedDockerConfig config = new CombinedDockerConfig("image", new Docker.Models.CreateContainerParameters(), Option.None<AuthConfig>());
-            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars);
+            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars, Services);
             var km1 = new KubernetesModule((IModule<DockerConfig>)m1, config);
             KubernetesModule[] modules = { km1 };
             var token = default(CancellationToken);
@@ -124,7 +125,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Kubernetes.Test.Commands
                 { "ACamelCaseEnvVar", new EnvVal("ACamelCaseEnvVarValue") }
             };
 
-            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, moduleEnvVars);
+            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, moduleEnvVars, Services);
             var km1 = new KubernetesModule((IModule<DockerConfig>)m1, config);
             KubernetesModule[] modules = { km1 };
             var token = default(CancellationToken);
@@ -185,7 +186,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Kubernetes.Test.Commands
             string secretName = "username-docker.io";
             var secretData = new Dictionary<string, byte[]> { [Constants.K8sPullSecretData] = Encoding.UTF8.GetBytes("Invalid Secret Data") };
             var secretMeta = new V1ObjectMeta(name: secretName, namespaceProperty: Namespace);
-            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars);
+            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars, Services);
             var km1 = new KubernetesModule((IModule<DockerConfig>)m1, config);
             KubernetesModule[] modules = { km1 };
             var token = default(CancellationToken);
@@ -254,9 +255,9 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Kubernetes.Test.Commands
         {
             CombinedDockerConfig config = new CombinedDockerConfig("image", new Docker.Models.CreateContainerParameters(), Option.None<AuthConfig>());
             string secretName = "username-docker.io";
-            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars);
+            IModule m1 = new DockerModule("module1", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars, Services);
             var km1 = new KubernetesModule((IModule<DockerConfig>)m1, config);
-            IModule m2 = new DockerModule("module2", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config2, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars);
+            IModule m2 = new DockerModule("module2", "v1", ModuleStatus.Running, Core.RestartPolicy.Always, Config2, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, EnvVars, Services);
             var km2 = new KubernetesModule((IModule<DockerConfig>)m2, config);
             KubernetesModule[] modules = { km1, km2 };
             var token = default(CancellationToken);

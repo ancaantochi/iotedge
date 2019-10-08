@@ -40,6 +40,9 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Kubernetes
         [JsonProperty(PropertyName = "env")]
         public IDictionary<string, EnvVal> Env { get; }
 
+        [JsonProperty(PropertyName = "services")]
+        public IDictionary<string, ServiceInfo> RegisteredServices { get; }
+
         public ImagePullPolicy ImagePullPolicy { get; set; }
 
         public CombinedDockerModule(string name, string version, ModuleStatus desiredStatus, RestartPolicy restartPolicy, CombinedDockerConfig settings, ConfigurationInfo configurationInfo, IDictionary<string, EnvVal> env)

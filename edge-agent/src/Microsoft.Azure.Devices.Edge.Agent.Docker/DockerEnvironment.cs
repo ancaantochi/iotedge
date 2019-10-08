@@ -92,7 +92,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                             dockerModule.ImagePullPolicy,
                             dockerModule.ConfigurationInfo,
                             dockerModule.Env,
-                            dockerModule.ServiceProfiles);
+                            dockerModule.RegisteredServices);
                         break;
 
                     case Core.Constants.EdgeAgentModuleName:
@@ -106,7 +106,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                             dockerModule.ImagePullPolicy,
                             dockerModule.ConfigurationInfo,
                             dockerModule.Env,
-                            dockerModule.ServiceProfiles);
+                            dockerModule.RegisteredServices);
                         break;
 
                     default:
@@ -126,7 +126,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                             dockerModule.ImagePullPolicy,
                             dockerModule.ConfigurationInfo,
                             dockerModule.Env,
-                            dockerModule.ServiceProfiles);
+                            dockerModule.RegisteredServices);
                         break;
                 }
 

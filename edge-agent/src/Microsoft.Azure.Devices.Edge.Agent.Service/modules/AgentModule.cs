@@ -28,9 +28,12 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Service.Modules
         readonly Option<string> workloadApiVersion;
         readonly string moduleId;
         readonly Option<string> moduleGenerationId;
+        readonly string edgeDeviceHostname;
+        readonly string iothubHostname;
+        readonly string deviceId;
 
-        public AgentModule(int maxRestartCount, TimeSpan intensiveCareTime, int coolOffTimeUnitInSeconds, bool usePersistentStorage, string storagePath)
-            : this(maxRestartCount, intensiveCareTime, coolOffTimeUnitInSeconds, usePersistentStorage, storagePath, Option.None<Uri>(), Option.None<string>(), Constants.EdgeAgentModuleIdentityName, Option.None<string>())
+        public AgentModule(int maxRestartCount, TimeSpan intensiveCareTime, int coolOffTimeUnitInSeconds, bool usePersistentStorage, string storagePath, string edgeDeviceHostname, string iothubHostname, string deviceId)
+            : this(maxRestartCount, intensiveCareTime, coolOffTimeUnitInSeconds, usePersistentStorage, storagePath, Option.None<Uri>(), Option.None<string>(), Constants.EdgeAgentModuleIdentityName, Option.None<string>(), edgeDeviceHostname, iothubHostname, deviceId)
         {
         }
 
@@ -43,7 +46,10 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Service.Modules
             Option<Uri> workloadUri,
             Option<string> workloadApiVersion,
             string moduleId,
-            Option<string> moduleGenerationId)
+            Option<string> moduleGenerationId,
+            string edgeDeviceHostname,
+            string iothubHostname,
+            string deviceId)
         {
             this.maxRestartCount = maxRestartCount;
             this.intensiveCareTime = intensiveCareTime;
@@ -54,6 +60,9 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Service.Modules
             this.workloadApiVersion = workloadApiVersion;
             this.moduleId = moduleId;
             this.moduleGenerationId = moduleGenerationId;
+            this.edgeDeviceHostname = edgeDeviceHostname;
+            this.iothubHostname = iothubHostname;
+            this.deviceId = deviceId;
         }
 
         static Dictionary<Type, IDictionary<string, Type>> DeploymentConfigTypeMapping
@@ -189,13 +198,19 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Service.Modules
                 .As<IRestartPolicyManager>()
                 .SingleInstance();
 
+            // IServiceRegistry
+            builder.Register(c => new ServiceRegistry(this.edgeDeviceHostname, this.iothubHostname, this.deviceId))
+                .As<IServiceRegistry>()
+                .SingleInstance();
+
             // IPlanner
             builder.Register(
                     async c => new HealthRestartPlanner(
                         await c.Resolve<Task<ICommandFactory>>(),
                         c.Resolve<IEntityStore<string, ModuleState>>(),
                         this.intensiveCareTime,
-                        c.Resolve<IRestartPolicyManager>()) as IPlanner)
+                        c.Resolve<IRestartPolicyManager>(),
+                        c.Resolve<IServiceRegistry>()) as IPlanner)
                 .As<Task<IPlanner>>()
                 .SingleInstance();
 

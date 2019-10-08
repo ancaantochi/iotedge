@@ -109,7 +109,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Test
             this.ImagePullPolicy == other.ImagePullPolicy;
 
         [JsonProperty("services")]   
-        public IDictionary<string, AdvertisedServiceProfile> ServiceProfiles { get; }
+        public IDictionary<string, ServiceInfo> RegisteredServices { get; }
 
         public override bool Equals(object obj) => this.Equals(obj as TestModuleBase<TConfig>);
 

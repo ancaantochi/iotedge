@@ -29,7 +29,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 ImagePullPolicy.OnCreate,
                 null,
                 new Dictionary<string, EnvVal>(),
-                new Dictionary<string, AdvertisedServiceProfile>());
+                new Dictionary<string, ServiceInfo>());
 
             // Act
             JToken json = JToken.Parse(JsonConvert.SerializeObject(module));
@@ -142,7 +142,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 ImagePullPolicy.OnCreate,
                 new ConfigurationInfo("bing"),
                 new Dictionary<string, EnvVal>(),
-                new Dictionary<string, AdvertisedServiceProfile>());
+                new Dictionary<string, ServiceInfo>());
             var updatedModule1 = (EdgeAgentDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Running);
             var updatedModule2 = (EdgeAgentDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Unknown);
 

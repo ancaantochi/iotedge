@@ -122,7 +122,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 ImagePullPolicy.OnCreate,
                 new ConfigurationInfo("1"),
                 new Dictionary<string, EnvVal>(),
-                new Dictionary<string, AdvertisedServiceProfile>());
+                new Dictionary<string, ServiceInfo>());
 
             var edgeHubDockerRuntimeModule = new EdgeHubDockerRuntimeModule(
                 ModuleStatus.Running,
@@ -165,7 +165,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
                 ImagePullPolicy.OnCreate,
                 new ConfigurationInfo("1"),
                 new Dictionary<string, EnvVal>(),
-                new Dictionary<string, AdvertisedServiceProfile>());
+                new Dictionary<string, ServiceInfo>());
             var updatedModule1 = (EdgeHubDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Running);
             var updatedModule2 = (EdgeHubDockerRuntimeModule)module.WithRuntimeStatus(ModuleStatus.Unknown);
 

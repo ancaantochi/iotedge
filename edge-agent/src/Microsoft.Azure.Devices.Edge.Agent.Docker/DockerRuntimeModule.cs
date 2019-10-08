@@ -25,7 +25,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             ImagePullPolicy imagePullPolicy,
             ConfigurationInfo configuration,
             IDictionary<string, EnvVal> env,
-            IDictionary<string, AdvertisedServiceProfile> services)
+            IDictionary<string, ServiceInfo> services)
             : base(name, version, desiredStatus, restartPolicy, config, imagePullPolicy, configuration, env, services)
         {
             this.ExitCode = exitCode;
@@ -55,7 +55,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             ImagePullPolicy imagePullPolicy,
             ConfigurationInfo configurationInfo,
             IDictionary<string, EnvVal> env,
-            IDictionary<string, AdvertisedServiceProfile> services)
+            IDictionary<string, ServiceInfo> services)
             : this(
                 name,
                 version,
@@ -162,6 +162,6 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             this.ImagePullPolicy,
             this.ConfigurationInfo,
             this.Env,
-            this.ServiceProfiles);
+            this.RegisteredServices);
     }
 }

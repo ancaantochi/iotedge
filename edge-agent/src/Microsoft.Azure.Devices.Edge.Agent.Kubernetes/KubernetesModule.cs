@@ -73,6 +73,9 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Kubernetes
         [JsonProperty(PropertyName = "env")]
         public IDictionary<string, EnvVal> Env { get; }
 
+        [JsonProperty(PropertyName = "services")]
+        public IDictionary<string, ServiceInfo> RegisteredServices { get; }
+
         [JsonProperty(PropertyName = "settings")]
         [JsonConverter(typeof(CombinedDockerConfigToStringConverter))]
         public CombinedDockerConfig Config { get; }

@@ -19,7 +19,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
 
             yield return new object[]
             {
-                new EdgeAgentDockerModule("docker", new DockerConfig("Foo"), ImagePullPolicy.Never, new ConfigurationInfo("c1"), new Dictionary<string, EnvVal> { ["Env1"] = new EnvVal("EnvVal1") }, "version1"),
+                new EdgeAgentDockerModule("docker", new DockerConfig("Foo"), ImagePullPolicy.Never, new ConfigurationInfo("c1"), new Dictionary<string, EnvVal> { ["Env1"] = new EnvVal("EnvVal1") }, new Dictionary<string, ServiceInfo>(), "version1"),
                 new EdgeAgentDockerModule("docker", new DockerConfig("Foo"), ImagePullPolicy.Never, null, null, null),
                 true
             };
@@ -33,7 +33,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
 
             yield return new object[]
             {
-                new EdgeAgentDockerModule("docker", new DockerConfig("Foo", "{}"), ImagePullPolicy.OnCreate, new ConfigurationInfo("c1"), new Dictionary<string, EnvVal> { ["Env1"] = new EnvVal("EnvVal1") }, "version1"),
+                new EdgeAgentDockerModule("docker", new DockerConfig("Foo", "{}"), ImagePullPolicy.OnCreate, new ConfigurationInfo("c1"), new Dictionary<string, EnvVal> { ["Env1"] = new EnvVal("EnvVal1") }, new Dictionary<string, ServiceInfo>(), "version1"),
                 new EdgeAgentDockerModule("docker", new DockerConfig("Foo", "{\"HostConfig\":{\"PortBindings\":{\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"443/tcp\":[{\"HostPort\":\"443\"}]}}}"), ImagePullPolicy.OnCreate, new ConfigurationInfo("c2"), new Dictionary<string, EnvVal> { ["Env2"] = new EnvVal("EnvVal2") }, null, "version2"),
                 true
             };

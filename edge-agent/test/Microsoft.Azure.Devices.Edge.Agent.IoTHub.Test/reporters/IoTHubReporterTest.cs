@@ -1287,7 +1287,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.IoTHub.Test.Reporters
                     ImagePullPolicy.Never,
                     new ConfigurationInfo("1"),
                     new Dictionary<string, EnvVal> { ["foo"] = new EnvVal("Bar") },
-                    new Dictionary<string, AdvertisedServiceProfile>());
+                    new Dictionary<string, ServiceInfo>());
                 ModuleSet currentModuleSet = ModuleSet.Create(
                     edgeAgentModule,
                     new TestRuntimeModule(
@@ -1628,7 +1628,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.IoTHub.Test.Reporters
                 var versionInfo = new VersionInfo("v1", "b1", "c1");
                 DateTime lastStartTimeUtc = DateTime.Parse("2017-11-13T23:44:35.127381Z", null, DateTimeStyles.RoundtripKind);
 
-                IEdgeAgentModule edgeAgent = new EdgeAgentDockerRuntimeModule(new DockerReportedConfig("image", string.Empty, "hash"), ModuleStatus.Running, 0, string.Empty, lastStartTimeUtc, DateTime.MinValue, ImagePullPolicy.OnCreate, new ConfigurationInfo("id"), new Dictionary<string, EnvVal>());
+                IEdgeAgentModule edgeAgent = new EdgeAgentDockerRuntimeModule(new DockerReportedConfig("image", string.Empty, "hash"), ModuleStatus.Running, 0, string.Empty, lastStartTimeUtc, DateTime.MinValue, ImagePullPolicy.OnCreate, new ConfigurationInfo("id"), new Dictionary<string, EnvVal>(), new Dictionary<string, ServiceInfo>());
 
                 // prepare IEdgeAgentConnection mock
                 var edgeAgentConnection = new Mock<IEdgeAgentConnection>();

@@ -19,7 +19,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             ImagePullPolicy imagePullPolicy,
             ConfigurationInfo configuration,
             IDictionary<string, EnvVal> env,
-            IDictionary<string, AdvertisedServiceProfile> services,
+            IDictionary<string, ServiceInfo> services,
             string version = "")
             : base(
                 Core.Constants.EdgeAgentModuleName,
@@ -77,7 +77,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             this.ImagePullPolicy,
             this.ConfigurationInfo,
             this.Env,
-            this.ServiceProfiles,
+            this.RegisteredServices,
             this.Version);
     }
 }

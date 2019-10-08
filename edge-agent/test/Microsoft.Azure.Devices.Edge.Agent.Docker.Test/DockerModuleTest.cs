@@ -20,6 +20,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
         static readonly DockerConfig Config1 = new DockerConfig("image1:42", @"{""HostConfig"": {""PortBindings"": {""43/udp"": [{""HostPort"": ""43""}], ""42/tcp"": [{""HostPort"": ""42""}]}}}");
         static readonly DockerConfig Config2 = new DockerConfig("image2:42", @"{""HostConfig"": {""PortBindings"": {""43/udp"": [{""HostPort"": ""43""}], ""42/tcp"": [{""HostPort"": ""42""}]}}}");
         static readonly IDictionary<string, EnvVal> DefaultEnvVals = new Dictionary<string, EnvVal> { ["Env1"] = new EnvVal("Val1") };
+        static readonly IDictionary<string, ServiceInfo> Services = new Dictionary<string, ServiceInfo>();
         static readonly IModule Module1 = new DockerModule("mod1", "version1", ModuleStatus.Running, RestartPolicy.OnUnhealthy, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, DefaultEnvVals, Services);
         static readonly IModule Module2 = new DockerModule("mod1", "version1", ModuleStatus.Running, RestartPolicy.OnUnhealthy, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, DefaultEnvVals, Services);
         static readonly IModule Module3 = new DockerModule("mod3", "version1", ModuleStatus.Running, RestartPolicy.OnUnhealthy, Config1, ImagePullPolicy.OnCreate, DefaultConfigurationInfo, DefaultEnvVals, Services);

@@ -28,7 +28,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test.Commands
     public class CreateCommandTest
     {
         static readonly IDictionary<string, EnvVal> EnvVars = new Dictionary<string, EnvVal>();
-        static readonly IDictionary<string, AdvertisedServiceProfile> services = new Dictionary<string, AdvertisedServiceProfile>();
+        static readonly IDictionary<string, ServiceInfo> services = new Dictionary<string, ServiceInfo>();
 
         readonly TimeSpan defaultTimeout = TimeSpan.FromSeconds(300);
 

@@ -19,7 +19,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
             ImagePullPolicy imagePullPolicy,
             ConfigurationInfo configuration,
             IDictionary<string, EnvVal> env,
-            IDictionary<string, AdvertisedServiceProfile> services)
+            IDictionary<string, ServiceInfo> services)
             : base(string.Empty, version, desiredStatus, restartPolicy, settings, imagePullPolicy, configuration, env, services)
         {
             Preconditions.CheckArgument(type?.Equals("docker") ?? false);

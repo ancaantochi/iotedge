@@ -8,32 +8,41 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
     using System.Threading.Tasks;
     using Makaretu.Dns;
 
-    class UnadvertiseServices : ICommand
+    class UpdateServices : ICommand
     {
         readonly IDictionary<string, ServiceInfo> services;
         readonly IServiceRegistry serviceRegistry;
+        private IModule currentModule;
+        private IModule m;
 
-        public UnadvertiseServices(IServiceRegistry serviceRegistry, IDictionary<string, ServiceInfo> services)
+        public UpdateServices(IServiceRegistry serviceRegistry, IDictionary<string, ServiceInfo> services)
         {
             this.services = services;
             this.serviceRegistry = serviceRegistry;
         }
 
-        public string Show() => "UnadvertiseServices";
+        public UpdateServices(IModule currentModule, IModule m)
+        {
+            this.currentModule = currentModule;
+            this.m = m;
+        }
 
-        public string Id { get; } = "UnadvertiseServices";
+        public string Show() => "UpdateServices";
+
+        public string Id { get; } = "UpdateServices";
 
         public Task ExecuteAsync(CancellationToken token)
         {
             foreach (KeyValuePair<string, ServiceInfo> service in this.services)
             {
-                this.serviceRegistry.RemoveService(service.Key, service.Value);
+                this.serviceRegistry.UpdateService(service.Key, service.Value);
             }
             return Task.CompletedTask;
         }
 
         public Task UndoAsync(CancellationToken token)
         {
+            //TODO: implement
             foreach (KeyValuePair<string, ServiceInfo> service in this.services)
             {
                 this.serviceRegistry.AddService(service.Key, service.Value);

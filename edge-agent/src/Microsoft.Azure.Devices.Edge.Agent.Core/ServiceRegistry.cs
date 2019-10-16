@@ -1,56 +1,81 @@
 namespace Microsoft.Azure.Devices.Edge.Agent.Core
 {
-    using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Net;
+    using System.Threading.Tasks;
     using Makaretu.Dns;
+    using Microsoft.Azure.Devices.Edge.Util.Concurrency;
 
     public class ServiceRegistry : IServiceRegistry
     {
+        ServiceDiscovery serviceDiscovery;
+        readonly AsyncLock serviceLock = new AsyncLock();
         readonly string iothubHostname;
         readonly string deviceId;
         readonly string deviceHostname;
-        readonly ServiceDiscovery serviceDiscovery;
+        readonly ConcurrentDictionary<string, ServiceInfo> services;
+        readonly IHostAddressProvider hostAddressProvider;
 
-        public ServiceRegistry(string deviceHostname, string iothubHostname, string deviceId)
+        public ServiceRegistry(string deviceHostname, string iothubHostname, string deviceId, IHostAddressProvider hostAddressProvider)
         {
-            this.serviceDiscovery = new ServiceDiscovery();
+            //this.serviceDiscovery = new ServiceDiscovery();
+            this.services = new ConcurrentDictionary<string, ServiceInfo>();
             this.deviceHostname = deviceHostname;
             this.iothubHostname = iothubHostname;
             this.deviceId = deviceId;
+            this.hostAddressProvider = hostAddressProvider;
         }
 
-        public bool AddService(ServiceInfo service)
+        public async Task<bool> AddService(string instanceName, ServiceInfo service)
         {
-            ServiceProfile serviceProfile = this.ContructServiceProfile(service.InstanceName, service);
+            await this.EnsureServiceDiscoveryIsStarted();
+
+            ServiceProfile serviceProfile = await this.ContructServiceProfile(instanceName, service);
+            this.services.AddOrUpdate(serviceProfile.FullyQualifiedName.ToString(), service, (s, info) => service);
             this.serviceDiscovery.Advertise(serviceProfile);
             return true;
         }
 
-        public bool RemoveService(ServiceInfo service)
+        public async Task<bool> UpdateService(string instanceName, ServiceInfo service)
         {
-            ServiceProfile serviceProfile = this.ContructServiceProfile(service.InstanceName, service);
+            ServiceProfile serviceProfile = await this.ContructServiceProfile(instanceName, service);
+            this.services.AddOrUpdate(serviceProfile.FullyQualifiedName.ToString(), service, (s, info) => service);
             this.serviceDiscovery.Unadvertise(serviceProfile);
+            this.serviceDiscovery.Advertise(serviceProfile);
             return true;
         }
 
-        public void Start()
+        public async Task<bool> RemoveService(string instanceName, ServiceInfo service)
         {
-            //foreach (KeyValuePair<string, ServiceInfo> service in this.services)
-            //{
-            //    var serviceProfile = this.ContructServiceProfile(service.Key, service.Value);
+            ServiceProfile serviceProfile = await this.ContructServiceProfile(instanceName, service);
+            this.services.TryRemove(serviceProfile.FullyQualifiedName.ToString(), out ServiceInfo _);
+            this.serviceDiscovery.Unadvertise(serviceProfile);
 
-            //    this.serviceDiscovery.Advertise(serviceProfile);
-            //}
+            await this.StopServiceDicovery();
+            return true;
         }
 
-        ServiceProfile ContructServiceProfile(string instanceName, ServiceInfo service)
+        async Task EnsureServiceDiscoveryIsStarted()
+        {
+            if (this.serviceDiscovery == null)
+            {
+                using (await this.serviceLock.LockAsync())
+                {
+                    if (this.serviceDiscovery == null)
+                    {
+                        this.serviceDiscovery = new ServiceDiscovery();
+                    }
+                }
+            }
+        }
+
+        async Task<ServiceProfile> ContructServiceProfile(string instanceName, ServiceInfo service)
         {
             var serviceProfile = new ServiceProfile
             {
                 InstanceName = instanceName,
-                ServiceName = service.InstanceName
+                ServiceName = service.ServiceName
             };
 
             var fqn = serviceProfile.FullyQualifiedName;
@@ -83,24 +108,27 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core
 
             serviceProfile.Resources.Add(txtRecord);
 
-            //TODO: get IP address from edgelet
-            string hostIps = Environment.GetEnvironmentVariable("HostIps") ?? string.Empty;
-            string[] hostIpsStrings = hostIps.Split(' ');
-            foreach (var address in hostIpsStrings)
+            foreach (IPAddress address in await this.hostAddressProvider.GetAddress())
             {
-                if (IPAddress.TryParse(address, out IPAddress ipAddress))
-                {
-                    serviceProfile.Resources.Add(AddressRecord.Create(serviceProfile.HostName, ipAddress));
-                }
+                serviceProfile.Resources.Add(AddressRecord.Create(serviceProfile.HostName, address));
             }
 
             return serviceProfile;
         }
 
-        public void Stop()
+        async Task StopServiceDicovery()
         {
-            this.serviceDiscovery.Dispose();
+            if (this.services.IsEmpty)
+            {
+                using (await this.serviceLock.LockAsync())
+                {
+                    if (this.services.IsEmpty)
+                    {
+                        this.serviceDiscovery.Dispose();
+                        this.serviceDiscovery = null;
+                    }
+                }
+            }
         }
-
     }
 }

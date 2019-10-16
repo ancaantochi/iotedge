@@ -501,7 +501,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Test.Planners
             var factory = new TestCommandFactory();
             var store = new Mock<IEntityStore<string, ModuleState>>();
             var restartManager = new RestartPolicyManager(MaxRestartCount, CoolOffTimeUnitInSeconds);
-            var serviceRegistry = new ServiceRegistry("hosname.local", "hub", "device1");
+            var serviceRegistry = new ServiceRegistry("hosname.local", "hub", "device1", new HostAddressProvider());
             var planner = new HealthRestartPlanner(factory, store.Object, IntensiveCareTime, restartManager, serviceRegistry);
 
             return (factory, store, restartManager, serviceRegistry, planner);

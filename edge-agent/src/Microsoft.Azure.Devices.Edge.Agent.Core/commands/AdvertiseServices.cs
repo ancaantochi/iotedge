@@ -27,7 +27,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
         {
             foreach (KeyValuePair<string, ServiceInfo> service in this.services)
             {
-                this.serviceRegistry.AddService(service.Value);
+                this.serviceRegistry.AddService(service.Key, service.Value);
             }
             return Task.CompletedTask;
         }
@@ -36,7 +36,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
         {
             foreach (KeyValuePair<string, ServiceInfo> service in this.services)
             {
-                this.serviceRegistry.RemoveService(service.Value);
+                this.serviceRegistry.RemoveService(service.Key, service.Value);
             }
             return Task.CompletedTask;
         }

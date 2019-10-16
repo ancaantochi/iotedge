@@ -120,12 +120,10 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
                 .Select(m => this.commandFactory.WrapAsync(new RemoveFromStoreCommand<ModuleState>(this.store, m)));
             IEnumerable<ICommand> removeState = await Task.WhenAll(removeStateTasks);
 
-            IEnumerable<ICommand> addServicesCommands = await Task.WhenAll(added.Where(m => m.RegisteredServices.Count > 0)
-                                                                                     .Select(m => this.commandFactory.WrapAsync(new AdvertiseServices(this.serviceRegistry, m.RegisteredServices))));
-            IEnumerable<ICommand> removeServicesCommands = await Task.WhenAll(removed.Where(m => m.RegisteredServices.Count > 0)
-                                                                                     .Select(m => this.commandFactory.WrapAsync(new UnadvertiseServices(this.serviceRegistry, m.RegisteredServices))));
-            //IEnumerable<ICommand> updateServicesCommands = await Task.WhenAll(updateDeployed.Where(m => m.RegisteredServices.Count > 0)
-            //                                                                      .Select(m => this.commandFactory.WrapAsync(new UpdateAdvertiseServices(this.serviceRegistry, m.RegisteredServices))));
+            IEnumerable<ICommand> advertisedServicesCommands = await this.ProcessAdvertisedServices(added,
+                                                                                                 removed,
+                                                                                                 updateDeployed,
+                                                                                                 current);
 
             // clear the "restartCount" and "lastRestartTime" values for running modules that have been up
             // for more than "IntensiveCareTime" & still have an entry for them in the store
@@ -139,13 +137,88 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
                 .Concat(updatedCommands)
                 .Concat(stateChangedCommands)
                 .Concat(desiredStatedChangedCommands.Select(d => d.command))
-                .Concat(removeServicesCommands)
-                .Concat(addServicesCommands)
+                .Concat(advertisedServicesCommands)
                 .Concat(resetHealthStatus)
                 .ToList();
 
             Events.PlanCreated(commands);
             return new Plan(commands);
+        }
+
+        async Task<IEnumerable<ICommand>> ProcessAdvertisedServices(IList<IModule> addedModules, IList<IRuntimeModule> removedModules, IList<IModule> updatedModules, ModuleSet current)
+        {
+            var tasks = new List<Task<ICommand>>();
+            IDictionary<string, ServiceInfo> added = new Dictionary<string, ServiceInfo>();
+            IDictionary<string, ServiceInfo> updated = new Dictionary<string, ServiceInfo>();
+            IDictionary<string, ServiceInfo> removed = new Dictionary<string, ServiceInfo>();
+
+            foreach (IModule addedModule in addedModules)
+            {
+                foreach (KeyValuePair<string, ServiceInfo> addedModuleRegisteredService in addedModule.RegisteredServices)
+                {
+                    added.Add(addedModuleRegisteredService.Key, addedModuleRegisteredService.Value);
+                }
+            }
+
+            foreach (IRuntimeModule removedModule in removedModules)
+            {
+                foreach (KeyValuePair<string, ServiceInfo> removedModuleRegisteredService in removedModule.RegisteredServices)
+                {
+                    removed.Add(removedModuleRegisteredService.Key, removedModuleRegisteredService.Value);
+                }
+            }
+
+            foreach (IModule module in updatedModules)
+            {
+                if (current.TryGetModule(module.Name, out IModule currentModule))
+                {
+                    foreach (string instanceName in module.RegisteredServices.Keys)
+                    {
+                        // service was added
+                        if (!currentModule.RegisteredServices.ContainsKey(instanceName))
+                        {
+                            added.Add(instanceName, module.RegisteredServices[instanceName]);
+                        }
+                        else
+                        {
+                            // check service was updated
+                            if (!currentModule.RegisteredServices[instanceName].Equals(module.RegisteredServices[instanceName]))
+                            {
+                                updated.Add(instanceName, module.RegisteredServices[instanceName]);
+                            }
+                        }
+                    }
+
+                    // service was removed
+                    foreach (string registeredServicesKey in currentModule.RegisteredServices.Keys)
+                    {
+                        if (!module.RegisteredServices.ContainsKey(registeredServicesKey))
+                        {
+                            removed.Add(registeredServicesKey, currentModule.RegisteredServices[registeredServicesKey]);
+                        }
+                    }
+
+                    
+                }
+            }
+
+            if (added.Count > 0)
+            {
+                tasks.Add(this.commandFactory.WrapAsync(new AdvertiseServices(this.serviceRegistry, added)));
+            }
+
+            if (removed.Count > 0)
+            {
+                tasks.Add(this.commandFactory.WrapAsync(new UnadvertiseServices(this.serviceRegistry, removed)));
+            }
+
+            if (updated.Count > 0)
+            {
+                tasks.Add(this.commandFactory.WrapAsync(new UpdateServices(this.serviceRegistry, updated)));
+            }
+
+            ICommand[] commands = await tasks.WhenAll();
+            return commands;
         }
 
         async Task<IList<(ICommand command, string module)>> ProcessDesiredStatusChangedModules(IList<IModule> desiredStatusChanged, ModuleSet current)

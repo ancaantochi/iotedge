@@ -10,6 +10,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
     public class DockerModule : IModule<DockerConfig>
     {
         static readonly DictionaryComparer<string, EnvVal> EnvDictionaryComparer = new DictionaryComparer<string, EnvVal>();
+        static readonly DictionaryComparer<string, ServiceInfo> ServiceInfoDictionaryComparer = new DictionaryComparer<string, ServiceInfo>();
 
         public DockerModule(
             string name,
@@ -86,7 +87,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                 this.Config.Equals(other.Config) &&
                 this.RestartPolicy == other.RestartPolicy &&
                 this.ImagePullPolicy == other.ImagePullPolicy &&
-                EnvDictionaryComparer.Equals(this.Env, other.Env);
+                EnvDictionaryComparer.Equals(this.Env, other.Env) &&
+                ServiceInfoDictionaryComparer.Equals(this.RegisteredServices, other.RegisteredServices);
         }
 
         public virtual bool IsOnlyModuleStatusChanged(IModule other)
@@ -99,7 +101,8 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                 this.Config.Equals(dockerModule.Config) &&
                 this.RestartPolicy == other.RestartPolicy &&
                 this.ImagePullPolicy == other.ImagePullPolicy &&
-                EnvDictionaryComparer.Equals(this.Env, other.Env);
+                EnvDictionaryComparer.Equals(this.Env, other.Env) &&
+                ServiceInfoDictionaryComparer.Equals(this.RegisteredServices, other.RegisteredServices);
         }
 
         public override int GetHashCode()
@@ -118,6 +121,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker
                 hashCode = (hashCode * 397) ^ this.RestartPolicy.GetHashCode();
                 hashCode = (hashCode * 397) ^ this.ImagePullPolicy.GetHashCode();
                 hashCode = (hashCode * 397) ^ EnvDictionaryComparer.GetHashCode(this.Env);
+                hashCode = (hashCode * 397) ^ ServiceInfoDictionaryComparer.GetHashCode(this.RegisteredServices);
                 return hashCode;
             }
         }

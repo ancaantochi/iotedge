@@ -198,8 +198,14 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Service.Modules
                 .As<IRestartPolicyManager>()
                 .SingleInstance();
 
+            //IHotsAddressProvider
+            builder.Register(c => new HostAddressProvider())
+                .As<IHostAddressProvider>()
+                .SingleInstance();
+
             // IServiceRegistry
-            builder.Register(c => new ServiceRegistry(this.edgeDeviceHostname, this.iothubHostname, this.deviceId))
+            builder.Register(c => new ServiceRegistry(this.edgeDeviceHostname, this.iothubHostname, this.deviceId,
+                                 c.Resolve<IHostAddressProvider>()))
                 .As<IServiceRegistry>()
                 .SingleInstance();
 

@@ -1,10 +1,13 @@
-﻿namespace Microsoft.Azure.Devices.Edge.Agent.Core
+namespace Microsoft.Azure.Devices.Edge.Agent.Core
 {
+    using System.Threading.Tasks;
+
     public interface IServiceRegistry
     {
-        bool AddService(ServiceInfo service);
-        bool RemoveService(ServiceInfo service);
-        void Start();
-        void Stop();
+        Task<bool> AddService(string instanceName, ServiceInfo service);
+
+        Task<bool> RemoveService(string instanceName, ServiceInfo service);
+
+        Task<bool> UpdateService(string instanceName, ServiceInfo service);
     }
 }

@@ -1,12 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 namespace Microsoft.Azure.Devices.Edge.Agent.Core.Planners
 {
-    using System;
     using System.Collections.Generic;
-    using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
-    using Makaretu.Dns;
+    using Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery;
 
     class UnadvertiseServices : ICommand
     {

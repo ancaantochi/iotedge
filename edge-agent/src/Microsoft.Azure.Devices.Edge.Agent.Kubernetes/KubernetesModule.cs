@@ -5,6 +5,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Kubernetes
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using Microsoft.Azure.Devices.Edge.Agent.Core;
+    using Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery;
     using Microsoft.Azure.Devices.Edge.Agent.Docker;
     using Microsoft.Azure.Devices.Edge.Util;
     using Newtonsoft.Json;

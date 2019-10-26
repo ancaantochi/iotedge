@@ -5,6 +5,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.Serialization;
+    using Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 

@@ -1,4 +1,4 @@
-namespace Microsoft.Azure.Devices.Edge.Agent.Core
+namespace Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery
 {
     using System;
     using System.Collections.Generic;
@@ -6,11 +6,11 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core
     using System.Net.NetworkInformation;
     using System.Threading.Tasks;
 
-    public class HostAddressProvider : IHostAddressProvider
+    public class LocalNetworkHostAddressProvider : IHostAddressProvider
     {
         public Task<IList<IPAddress>> GetAddress()
         {
-            //TODO: get IP address from edgelet
+            //TODO: get IP address from Networkinterfaces
             IList<IPAddress> addresses = new List<IPAddress>();
             string hostIps = Environment.GetEnvironmentVariable("HostIps") ?? string.Empty;
             string[] hostIpsStrings = hostIps.Split(' ');

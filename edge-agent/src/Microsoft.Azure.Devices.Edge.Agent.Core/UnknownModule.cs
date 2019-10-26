@@ -3,6 +3,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery;
     using Newtonsoft.Json;
 
     public class UnknownModule : IModule

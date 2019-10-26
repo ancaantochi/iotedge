@@ -1,4 +1,4 @@
-namespace Microsoft.Azure.Devices.Edge.Agent.Core
+namespace Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery
 {
     using System.Collections.Generic;
     using System.Net;

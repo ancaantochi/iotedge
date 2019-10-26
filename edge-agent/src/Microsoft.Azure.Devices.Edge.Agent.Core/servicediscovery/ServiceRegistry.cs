@@ -1,4 +1,5 @@
-namespace Microsoft.Azure.Devices.Edge.Agent.Core
+// Copyright (c) Microsoft. All rights reserved.
+namespace Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery
 {
     using System.Collections.Concurrent;
     using System.Collections.Generic;

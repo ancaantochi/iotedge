@@ -9,6 +9,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Test.Planners
     using System.Threading.Tasks;
     using Microsoft.Azure.Devices.Edge.Agent.Core.Planners;
     using Microsoft.Azure.Devices.Edge.Agent.Core.PlanRunners;
+    using Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery;
     using Microsoft.Azure.Devices.Edge.Storage;
     using Microsoft.Azure.Devices.Edge.Util.Test.Common;
     using Moq;
@@ -501,7 +502,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.Test.Planners
             var factory = new TestCommandFactory();
             var store = new Mock<IEntityStore<string, ModuleState>>();
             var restartManager = new RestartPolicyManager(MaxRestartCount, CoolOffTimeUnitInSeconds);
-            var serviceRegistry = new ServiceRegistry("hosname.local", "hub", "device1", new HostAddressProvider());
+            var serviceRegistry = new ServiceRegistry("hosname.local", "hub", "device1", new LocalNetworkHostAddressProvider());
             var planner = new HealthRestartPlanner(factory, store.Object, IntensiveCareTime, restartManager, serviceRegistry);
 
             return (factory, store, restartManager, serviceRegistry, planner);

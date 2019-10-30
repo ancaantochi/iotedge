@@ -8,28 +8,32 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery
 
     public class LocalNetworkHostAddressProvider : IHostAddressProvider
     {
+        public event EventHandler NetworkAddressChanged;
+
+        public LocalNetworkHostAddressProvider()
+        {
+            NetworkChange.NetworkAddressChanged += (o, args) => this.NetworkAddressChanged?.Invoke(o, args);
+        }
+        
+
         public Task<IList<IPAddress>> GetAddress()
         {
-            //TODO: get IP address from Networkinterfaces
             IList<IPAddress> addresses = new List<IPAddress>();
-            string hostIps = Environment.GetEnvironmentVariable("HostIps") ?? string.Empty;
-            string[] hostIpsStrings = hostIps.Split(' ');
-            foreach (string address in hostIpsStrings)
+            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (var networkInterface in networkInterfaces)
             {
-                if (IPAddress.TryParse(address, out IPAddress ipAddress))
+                if (networkInterface.OperationalStatus == OperationalStatus.Up && networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback
+                    && networkInterface.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
                 {
-                    addresses.Add(ipAddress);
+                    foreach (var unicastIPAddressInformation in networkInterface.GetIPProperties().UnicastAddresses)
+                    {
+                        //TODO: filter IPv4 only
+                        addresses.Add(unicastIPAddressInformation.Address);
+                    }
                 }
             }
-
-            NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
-
+           
             return Task.FromResult(addresses);
-        }
-
-        private void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
     }
 }

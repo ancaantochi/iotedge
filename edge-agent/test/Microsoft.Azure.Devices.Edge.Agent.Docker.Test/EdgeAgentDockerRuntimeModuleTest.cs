@@ -5,6 +5,7 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Docker.Test
     using System.Collections.Generic;
     using System.Globalization;
     using Microsoft.Azure.Devices.Edge.Agent.Core;
+    using Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery;
     using Microsoft.Azure.Devices.Edge.Util.Test.Common;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;

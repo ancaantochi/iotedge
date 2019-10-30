@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 namespace Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery
 {
+    using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Net;
@@ -20,7 +21,6 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery
 
         public ServiceRegistry(string deviceHostname, string iothubHostname, string deviceId, IHostAddressProvider hostAddressProvider)
         {
-            //this.serviceDiscovery = new ServiceDiscovery();
             this.services = new ConcurrentDictionary<string, ServiceInfo>();
             this.deviceHostname = deviceHostname;
             this.iothubHostname = iothubHostname;
@@ -66,9 +66,23 @@ namespace Microsoft.Azure.Devices.Edge.Agent.Core.ServiceDiscovery
                     if (this.serviceDiscovery == null)
                     {
                         this.serviceDiscovery = new ServiceDiscovery();
+                        this.hostAddressProvider.NetworkAddressChanged += this.HostAddressProviderOnNetworkAddressChanged;
                     }
                 }
             }
+        }
+
+        void HostAddressProviderOnNetworkAddressChanged(object sender, EventArgs e)
+        {
+            Task[] updateTask = new Task[this.services.Count];
+            int i = 0;
+            foreach (KeyValuePair<string, ServiceInfo> service in this.services)
+            {
+                updateTask[i] = this.UpdateService(service.Key, service.Value);
+                i++;
+            }
+
+            Task.WaitAll(updateTask);
         }
 
         async Task<ServiceProfile> ContructServiceProfile(string instanceName, ServiceInfo service)

@@ -59,6 +59,7 @@ namespace Microsoft.Azure.Devices.Routing.Core.Endpoints
                 if (this.closed)
                 {
                     throw new InvalidOperationException($"Endpoint executor for endpoint {this.Endpoint} is closed.");
+<<<<<<< HEAD:edge-hub/src/Microsoft.Azure.Devices.Routing.Core/endpoints/StoringAsyncEndpointExecutor.cs
                 }
 
                 using (MetricsV0.StoreLatency(this.Endpoint.Id))
@@ -94,6 +95,39 @@ namespace Microsoft.Azure.Devices.Routing.Core.Endpoints
                 if (!this.closed.GetAndSet(true))
                 {
                     this.cts.Cancel();
+=======
+                }
+
+                // Get the checkpointer corresponding to the queue for this priority
+                ImmutableDictionary<uint, EndpointExecutorFsm> snapshot = this.prioritiesToFsms;
+                ICheckpointer checkpointer = snapshot[priority].Checkpointer;
+
+                IMessage storedMessage = await this.messageStore.Add(MessageQueueIdHelper.GetMessageQueueId(this.Endpoint.Id, priority), message, timeToLiveSecs);
+                checkpointer.Propose(storedMessage);
+                Events.AddMessageSuccess(this, storedMessage.Offset, priority, timeToLiveSecs);
+
+                this.hasMessagesInQueue.Set();
+            }
+            catch (Exception ex)
+            {
+                Routing.UserMetricLogger.LogIngressFailureMetric(1, this.Endpoint.IotHubName, message, "storage_failure");
+                Events.AddMessageFailure(this, ex);
+                throw;
+            }
+        }
+
+        public void Dispose() => this.Dispose(true);
+
+        public async Task CloseAsync()
+        {
+            Events.Close(this);
+
+            try
+            {
+                if (!this.closed.GetAndSet(true))
+                {
+                    this.cts.Cancel();
+>>>>>>> eaef7abd9... Remove metrics v0 (#4109):edge-hub/core/src/Microsoft.Azure.Devices.Routing.Core/endpoints/StoringAsyncEndpointExecutor.cs
                     // Require to close all FSMs to complete currently executing command if any in order to unblock sendMessageTask.
                     ImmutableDictionary<uint, EndpointExecutorFsm> snapshot = this.prioritiesToFsms;
                     foreach (EndpointExecutorFsm fsm in snapshot.Values)
@@ -273,7 +307,6 @@ namespace Microsoft.Azure.Devices.Routing.Core.Endpoints
                                 Events.ProcessingMessages(this, messages, priority);
                                 await this.ProcessMessages(messages, fsm);
                                 Events.SendMessagesSuccess(this, messages, priority);
-                                MetricsV0.DrainedCountIncrement(this.Endpoint.Id, messages.Length, priority);
 
                                 // Only move on to the next priority if the queue for the current
                                 // priority is empty. If we processed any messages, break out of
@@ -474,6 +507,7 @@ namespace Microsoft.Azure.Devices.Routing.Core.Endpoints
             public static void UpdatePrioritiesFailure(StoringAsyncEndpointExecutor executor, IList<uint> priorities)
             {
                 Log.LogError((int)EventIds.UpdatePrioritiesFailure, $"[UpdatePrioritiesSuccess] Update priorities failed EndpointId: {executor.Endpoint.Id}, EndpointName: {executor.Endpoint.Name}, New Priorities: {priorities}");
+<<<<<<< HEAD:edge-hub/src/Microsoft.Azure.Devices.Routing.Core/endpoints/StoringAsyncEndpointExecutor.cs
             }
 
             public static void Close(StoringAsyncEndpointExecutor executor)
@@ -530,6 +564,58 @@ namespace Microsoft.Azure.Devices.Routing.Core.Endpoints
                 return new MetricTags("EndpointId", id);
             }
 
+=======
+            }
+
+            public static void Close(StoringAsyncEndpointExecutor executor)
+            {
+                Log.LogInformation((int)EventIds.Close, "[Close] Close began. EndpointId: {0}, EndpointName: {1}", executor.Endpoint.Id, executor.Endpoint.Name);
+            }
+
+            public static void CloseSuccess(StoringAsyncEndpointExecutor executor)
+            {
+                Log.LogInformation((int)EventIds.CloseSuccess, "[CloseSuccess] Close succeeded. EndpointId: {0}, EndpointName: {1}", executor.Endpoint.Id, executor.Endpoint.Name);
+            }
+
+            public static void CloseFailure(StoringAsyncEndpointExecutor executor, Exception ex)
+            {
+                Log.LogError((int)EventIds.CloseFailure, ex, "[CloseFailure] Close failed. EndpointId: {0}, EndpointName: {1}", executor.Endpoint.Id, executor.Endpoint.Name);
+            }
+
+            public static void ErrorInPopulatePump(Exception ex)
+            {
+                Log.LogWarning((int)EventIds.ErrorInPopulatePump, ex, "Error in populate messages pump");
+            }
+        }
+
+        static class MetricsV0
+        {
+            static readonly CounterOptions EndpointMessageStoredCountOptions = new CounterOptions
+            {
+                Name = "EndpointMessageStoredCount",
+                MeasurementUnit = Unit.Events
+            };
+
+            static readonly CounterOptions EndpointMessageDrainedCountOptions = new CounterOptions
+            {
+                Name = "EndpointMessageDrainedCount",
+                MeasurementUnit = Unit.Events
+            };
+
+            static readonly TimerOptions EndpointMessageLatencyOptions = new TimerOptions
+            {
+                Name = "EndpointMessageStoredLatencyMs",
+                MeasurementUnit = Unit.None,
+                DurationUnit = TimeUnit.Milliseconds,
+                RateUnit = TimeUnit.Seconds
+            };
+
+            internal static MetricTags GetTags(string id)
+            {
+                return new MetricTags("EndpointId", id);
+            }
+
+>>>>>>> eaef7abd9... Remove metrics v0 (#4109):edge-hub/core/src/Microsoft.Azure.Devices.Routing.Core/endpoints/StoringAsyncEndpointExecutor.cs
             internal static MetricTags GetTagsWithPriority(string id, uint priority)
             {
                 return new MetricTags(new string[] { "EndpointId", "priority" }, new string[] { id, priority.ToString() });
